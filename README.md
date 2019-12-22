@@ -1,6 +1,6 @@
 ## Installation of gmailnotifier plugin
-1.  Install the most recent version of Golang.\
-Using [Homebrew](https://brew.sh/) 
+1.  Install the most recent version of Golang.
+    Using [Homebrew](https://brew.sh/) 
     ```
     brew update
     brew install golang
@@ -8,10 +8,10 @@ Using [Homebrew](https://brew.sh/)
 1.  Get the most recent release of BitBar. Currently that is https://github.com/matryer/bitbar/releases/tag/v1.9.2
 1.  Extract the `BitBar-v1.9.2.zip` zip file (in other words, double-click to open it).
 1.  Copy the BitBar.app file to the **Applications** directory.
-1.  Double-click the `BitBar.app` application to open it, then click Open to install it.\
+1.  Double-click the `BitBar.app` application to open it, then click Open to install it.
     You may need to go in to the Mac security settings to allow installation of a third party app on your Mac if your settings prevent you from installing BitBar.
-1.  When prompted by BitBar, set the `plugins` directory location, this is the location where your toolbar apps will run from.\
-    **NOTE**: If you only want to run this app (and no other BitBar plugins), using the `gmailnotifier/plugins` directory is fine. However, if you have other plugins, you probably want a plugins directory in a more central location (eg. `$HOME/bitbar/plugins/`.\
+1.  When prompted by BitBar, set the `plugins` directory location, this is the location where your toolbar apps will run from.
+    **NOTE**: If you only want to run this app (and no other BitBar plugins), using the `gmailnotifier/plugins` directory is fine. However, if you have other plugins, you probably want a plugins directory in a more central location (eg. `$HOME/bitbar/plugins/`.
     If you use an external plugins directory, you will need to copy the `gmail-checker.*.cgo` executable to that plugins directory.
 1.  Create a file called `.creds_gmail` in the same location as the executable (`gmailnotifier/plugins/`), then add your Gmail username and password separated by a pipe (`|`). Do this for each email account you want to check.
     ```
