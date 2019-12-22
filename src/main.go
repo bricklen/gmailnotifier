@@ -6,7 +6,7 @@ package main
 //<bitbar.author>bricklen</bitbar.author>
 //<bitbar.author.github>bricklen</bitbar.author.github>
 //<bitbar.desc>Configurable gmail checks for multiple accounts</bitbar.desc>
-//<bitbar.image>https://imgur.com/a/BBw6hAI</bitbar.image>
+//<bitbar.image>https://i.imgur.com/a8hV99U.png</bitbar.image>
 //<bitbar.dependencies>golang</bitbar.dependencies>
 
 import (
