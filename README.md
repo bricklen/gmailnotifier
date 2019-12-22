@@ -27,7 +27,7 @@ brew install golang
     **NOTE**: If you only want to run this app (and no other BitBar plugins), using the `gmailnotifier-X.Y/plugins` directory is fine. However, if you have other plugins, you probably want a plugins directory in a more central location (eg. `$HOME/bitbar/plugins/`.
     If you do use an external BitBar plugins directory, you will need to copy the `gmailnotifier.*.cgo` executable to that plugins directory.
 1.  If you get a warning like "*gmailnotifier.30s.cgo cannot be opened because the developer cannot be verified*", you will need go to *System Preferences* -> *Security & Privacy* -> *General* and allow the app to be opened.
-1.  Once gmailnotifier is successfully installed, modify the `.creds_gmail` file, which should be in the same location as the executable (eg. `gmailnotifier-X.Y/plugins/`). If it doesn't exist, create it.
+1.  Once gmailnotifier is successfully installed, add a file called `.creds_gmail` to same location as the executable (eg. `gmailnotifier-X.Y/plugins/`). This file must exist for the plugin to know which accounts to check.
     
     Add your Gmail username and password separated by a pipe (`|`).
     
@@ -62,6 +62,13 @@ See https://support.google.com/accounts/answer/185833?hl=en
 
 Excerpt
 > When you use 2-Step Verification, some apps or devices may be blocked from accessing your Google Account. App Passwords are a way to let the blocked app or device access your Google Account.
-   
-   
-   
+
+## Privacy notice
+This app does **NOT** send your credentials (or anything else) to external locations, except directly to https://mail.google.com/mail to get the unread mail counts.
+
+You are encouraged to review the `main.go` source file - and to build a new executable from that - if you have any concerns that there might be some malicious code in this plugin.
+
+If you fork or build from source, be sure to maintain the credentials file name of `.creds_gmail`, or if you change it, make sure to update the `.gitignore` file with the new file name so that it does not get inadvertently committed to your github repo.
+
+## Disclaimer
+See the LICENSE about disclaimers of liability. As with all Open Source software: use at your own risk. 
