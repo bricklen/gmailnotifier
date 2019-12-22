@@ -18,7 +18,7 @@ brew install golang
 
 ## gmailnotifier installation
 1.  Download the most recent release from https://github.com/bricklen/gmailnotifier/releases
-1.  Extract the zip file (or tarball). If you're unsure, create a directory under $HOME called `apps` and extract the zip file there.
+1.  Extract the zip file (or tarball). If you're unsure where to extract to, create a directory under $HOME called `apps` and extract the zip file there.
 1.  Launch the BitBar app if you haven't already.
 1.  Click on the BitBar text/icon in the toolbar, select *Change Plugin Folder*, then set the plugins directory location to where your toolbar apps will run from. This should be `gmailnotifier-X.Y/plugins`, where `X.Y` is the version. (see NOTE below for alternatives).
     
@@ -26,13 +26,15 @@ brew install golang
     
     **NOTE**: If you only want to run this app (and no other BitBar plugins), using the `gmailnotifier-X.Y/plugins` directory is fine. However, if you have other plugins, you probably want a plugins directory in a more central location (eg. `$HOME/bitbar/plugins/`.
     If you do use an external BitBar plugins directory, you will need to copy the `gmailnotifier.*.cgo` executable to that plugins directory.
-1.  If you get a warning like *“gmailnotifier.30s.cgo” cannot be opened because the developer cannot be verified*, you will need go to *System Preferences* -> *Security & Privacy* -> *General* and allow the app to be opened.
-1.  Once gmailnotifier is successfully installed, modify the `.creds_gmail` file, which should be in the same location as the executable (eg. `gmailnotifier-X.Y/plugins/`). Add your Gmail username and password separated by a pipe (`|`). Do this for each email account you want to check.
+1.  If you get a warning like "*gmailnotifier.30s.cgo cannot be opened because the developer cannot be verified*", you will need go to *System Preferences* -> *Security & Privacy* -> *General* and allow the app to be opened.
+1.  Once gmailnotifier is successfully installed, modify the `.creds_gmail` file, which should be in the same location as the executable (eg. `gmailnotifier-X.Y/plugins/`). If it doesn't exist, create it.
+    Add your Gmail username and password separated by a pipe (`|`). Do this for each email account you want to check, one *username|password* pair per line. 
+
     #### Example
     ```
     examplename|mysecretpassword
     myotheremail|supersecretpass
-    mygsuiteemail|myuncrackablepasswd
+    someothergmail|myuncrackablepasswd
     ```
 1.  Click the BitBar icon in your toolbar, select *Preferences* -> *Refresh All*.
 1.  Your plugin should now show as a small mail icon with the number of unread emails to the right of it.
