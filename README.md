@@ -28,7 +28,10 @@ brew install golang
     If you do use an external BitBar plugins directory, you will need to copy the `gmailnotifier.*.cgo` executable to that plugins directory.
 1.  If you get a warning like "*gmailnotifier.30s.cgo cannot be opened because the developer cannot be verified*", you will need go to *System Preferences* -> *Security & Privacy* -> *General* and allow the app to be opened.
 1.  Once gmailnotifier is successfully installed, modify the `.creds_gmail` file, which should be in the same location as the executable (eg. `gmailnotifier-X.Y/plugins/`). If it doesn't exist, create it.
-    Add your Gmail username and password separated by a pipe (`|`). Do this for each email account you want to check, one *username|password* pair per line. 
+    
+    Add your Gmail username and password separated by a pipe (`|`).
+    
+    Do this for each email account you want to check, one *username|password* pair per line. 
 
     #### Example
     ```
