@@ -28,9 +28,9 @@ import (
 var noEmail = ":envelope:"
 var gotEmail = ":e-mail:"
 
-/* 	If changes are made to this file, from gmailnotifier directory,
-build the executable:
-go build -o plugins/gmail-checker.30s.cgo src/main.go
+/*
+If changes are made to this file, from gmailnotifier directory, build the executable:
+go build -o plugins/gmailnotifier.30s.cgo src/main.go
 */
 
 func main() {
@@ -38,6 +38,11 @@ func main() {
 	errHandler(err)
 	// .creds_gmail path resolves to the same directory the executable resides in
 	credsFile := filepath.Dir(execFileAndPath) + "/.creds_gmail"
+	testFileExistence := fileExists(credsFile)
+	if testFileExistence == false {
+		fmt.Printf("%s file not found.", credsFile)
+		os.Exit(0)
+	}
 
 	f, err := os.Open(credsFile)
 	errHandler(err)
@@ -82,7 +87,7 @@ func main() {
 	if unreadEmails > int(0) {
 		fmt.Printf("%v %d\n", gotEmail, unreadEmails)
 		fmt.Println("---")
-		// Everything below "---" will only show up in the drop list once you click on the icon in the toolbar./
+		// Everything below "---" will only show up in the drop list once you click on the icon in the toolbar.
 		// Anything printed above the "---" will be cycled through in the toolbar.
 		fmt.Println(countPerUser)
 	} else {
@@ -94,4 +99,12 @@ func errHandler(e error) {
 	if e != nil {
 		fmt.Printf("ERR: %s", e)
 	}
+}
+
+func fileExists(filename string) bool {
+	info, err := os.Stat(filename)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return !info.IsDir()
 }
