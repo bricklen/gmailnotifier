@@ -41,10 +41,13 @@
     ```
     examplename|mysecretpassword
     myotheremail|supersecretpass
-    someothergmail|myuncrackablepasswd
+    my-gsuite-email@acme.com|myuncrackablepasswd
     ```
 1.  Click the BitBar icon in your toolbar, select *Preferences* -> *Refresh All*.
 1.  Your plugin should now show as a small mail icon with the number of unread emails to the right of it.
+
+### Note about G-Suite (non-gmail) domains
+This plugin works for those, but you will need to supply your full organization address as your username, whereas if it is for a regular Gmail account, you only need to supply your username.
 
 ### Directory layout
 ```
