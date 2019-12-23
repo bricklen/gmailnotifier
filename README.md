@@ -1,12 +1,15 @@
-## Prerequisites
-Install the most recent version of Golang, if it is not already installed.
-Using [Homebrew](https://brew.sh/) 
-```
-brew update
-brew install golang
-```
+# Prerequisites
+* [BitBar](https://github.com/matryer/bitbar)
+* Recent version of Golang
 
-## BitBar installation
+# tl;dr installation instructions
+1.  Install BitBar.
+1.  Copy the `gmailnotifier.*.cgo` executable from the `plugins` directory of this github repo to a local directory on your Mac.
+1.  Create the `.creds_gmail` file in the same directory with your `email|password` pairs.
+
+# Detailed installation instructions 
+
+### BitBar installation
 1.  Get the most recent release of BitBar from https://github.com/matryer/bitbar/releases/
 1.  Extract the `BitBar-X.Y.Z.zip` zip file (eg. double-click to open it). `X.Y.Z` here is the package version.
 1.  Copy the `BitBar.app` file to the **Applications** directory.
@@ -16,7 +19,7 @@ brew install golang
     You may need to go to *System Preferences* -> *Security & Privacy* -> *General* and allow the app to be opened. This step applies to installing `gmailnotifier` too, because these are third party apps, not ones from the Mac app store.
 1.  You will be prompted to choose a location where the plugins are located. For now, you can cancel out of this, we'll set that location once `gmailnotifier` is installed.
 
-## gmailnotifier installation
+### gmailnotifier installation
 1.  Download the most recent release from https://github.com/bricklen/gmailnotifier/releases
 1.  Extract the zip file (or tarball). If you're unsure where to extract to, create a directory under $HOME called `apps` and extract the zip file there.
 1.  Launch the BitBar app if you haven't already.
@@ -43,6 +46,19 @@ brew install golang
 1.  Click the BitBar icon in your toolbar, select *Preferences* -> *Refresh All*.
 1.  Your plugin should now show as a small mail icon with the number of unread emails to the right of it.
 
+### Directory layout
+```
+gmailnotifier-X.Y
+├── .gitignore
+├── LICENSE
+├── README.md
+├── plugins
+│   ├── .creds_gmail
+│   └── gmailnotifier.30s.cgo
+└── src
+    └── main.go
+```
+
 ## Rebuilding the Golang executable
 If you make changes to `main.go`, you will need to rebuild the `.cgo` executable file.
 
@@ -58,6 +74,9 @@ go build -o plugins/gmailnotifier.30s.cgo src/main.go
 ### Changing the execution intervals
 The notifier check frequency is defined by the interval in the file name (between the name and extension). For example, to check every 30 seconds, the file name would be `gmailnotifier.30s.cgo`
 
+### About the credentials file
+If you fork or build from source, **be sure** to maintain the credentials file name of `.creds_gmail`, or if you change it, make sure to update the `.gitignore` file with the new file name so that it does not get inadvertently committed to your github repo. If you end up exposing usernames and passwords in a github repo you're surely going to be in for a bad time.
+
 #### Gmail App Passwords are preferred over your main email password
 See https://support.google.com/accounts/answer/185833?hl=en
 
@@ -65,11 +84,9 @@ Excerpt
 > When you use 2-Step Verification, some apps or devices may be blocked from accessing your Google Account. App Passwords are a way to let the blocked app or device access your Google Account.
 
 ## Privacy notice
-This app does **NOT** send your credentials (or anything else) to external locations, except directly to https://mail.google.com/mail to get the unread mail counts.
+This little app does not save, nor send your credentials (or anything else for that matter) anywhere, except directly to https://mail.google.com/mail to get the unread mail counts.
 
-You are encouraged to review the `main.go` source file - and to build a new executable from that - if you have any concerns that there might be some malicious code in this plugin.
-
-If you fork or build from source, be sure to maintain the credentials file name of `.creds_gmail`, or if you change it, make sure to update the `.gitignore` file with the new file name so that it does not get inadvertently committed to your github repo.
+You are encouraged to review the `main.go` source file - and to build a new executable from that - if you have any concerns about the code.
 
 ## Disclaimer
 See the LICENSE about disclaimers of liability. As with all Open Source software: use at your own risk. 
