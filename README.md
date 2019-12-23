@@ -27,6 +27,7 @@ brew install golang
     **NOTE**: If you only want to run this app (and no other BitBar plugins), using the `gmailnotifier-X.Y/plugins` directory is fine. However, if you have other plugins, you probably want a plugins directory in a more central location (eg. `$HOME/bitbar/plugins/`.
     If you do use an external BitBar plugins directory, you will need to copy the `gmailnotifier.*.cgo` executable to that plugins directory.
 1.  If you get a warning like "*gmailnotifier.30s.cgo cannot be opened because the developer cannot be verified*", you will need go to *System Preferences* -> *Security & Privacy* -> *General* and allow the app to be opened.
+1.  If you needed to grant permission to install the gmailnotifier app, repeat the earlier BitBar *Change Plugin Folder* step.
 1.  Once gmailnotifier is successfully installed, add a file called `.creds_gmail` to same location as the executable (eg. `gmailnotifier-X.Y/plugins/`). This file must exist for the plugin to know which accounts to check.
     
     Add your Gmail username and password separated by a pipe (`|`).
