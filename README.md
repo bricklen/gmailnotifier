@@ -5,16 +5,16 @@
 # tl;dr installation instructions
 1.  Install BitBar.
 1.  Copy the `gmailnotifier.*.cgo` executable from the `plugins` directory of this github repo to a local directory on your Mac.
-1.  Create the `.creds_gmail` file in the same directory with your `email|password` pairs.
+1.  Create the `.creds_gmail` file in the same local directory, this file stores the `email|password` credentials.
 
 # Detailed installation instructions 
 
 ### BitBar installation
 1.  Get the most recent release of BitBar from https://github.com/matryer/bitbar/releases/
-1.  Extract the `BitBar-X.Y.Z.zip` zip file (eg. double-click to open it). `X.Y.Z` here is the package version.
+1.  Extract/open the `BitBar-X.Y.Z.zip` zip file. `X.Y.Z` here is the package version.
 1.  Copy the `BitBar.app` file to the **Applications** directory.
 1.  Launch the `BitBar` app. For example, using Spotlight (Command + Space), type in BitBar and you should see the application listed.
-    Double click to launch it, then click Open to install it.
+    Launch it, then click Open to install it.
     
     You may need to go to *System Preferences* -> *Security & Privacy* -> *General* and allow the app to be opened. This step applies to installing `gmailnotifier` too, because these are third party apps, not ones from the Mac app store.
 1.  You will be prompted to choose a location where the plugins are located. For now, you can cancel out of this, we'll set that location once `gmailnotifier` is installed.
@@ -30,10 +30,10 @@
     **NOTE**: If you only want to run this app (and no other BitBar plugins), using the `gmailnotifier-X.Y/plugins` directory is fine. However, if you have other plugins, you probably want a plugins directory in a more central location (eg. `$HOME/bitbar/plugins/`.
     If you do use an external BitBar plugins directory, you will need to copy the `gmailnotifier.*.cgo` executable to that plugins directory.
 1.  If you get a warning like "*gmailnotifier.30s.cgo cannot be opened because the developer cannot be verified*", you will need go to *System Preferences* -> *Security & Privacy* -> *General* and allow the app to be opened.
-1.  If you needed to grant permission to install the gmailnotifier app, repeat the earlier BitBar *Change Plugin Folder* step.
+1.  If you needed to grant permission to install the gmailnotifier app, repeat the earlier BitBar *Change Plugin Folder* step (step #4)
 1.  Once gmailnotifier is successfully installed, add a file called `.creds_gmail` to same location as the executable (eg. `gmailnotifier-X.Y/plugins/`). This file must exist for the plugin to know which accounts to check.
     
-    Add your Gmail username and password separated by a pipe (`|`).
+    Add the Gmail username and password to .creds_gmail separated by a pipe (`|`).
     
     Do this for each email account you want to check, one *username|password* pair per line. 
 
@@ -75,9 +75,10 @@ go build -o plugins/gmailnotifier.30s.cgo src/main.go
 The notifier check frequency is defined by the interval in the file name (between the name and extension). For example, to check every 30 seconds, the file name would be `gmailnotifier.30s.cgo`
 
 ### About the credentials file
-If you fork or build from source, **be sure** to maintain the credentials file name of `.creds_gmail`, or if you change it, make sure to update the `.gitignore` file with the new file name so that it does not get inadvertently committed to your github repo. If you end up exposing usernames and passwords in a github repo you're surely going to be in for a bad time.
+If you fork or build from source, **be sure** to maintain the credentials file name of `.creds_gmail`, or if you change it, make sure to update the `.gitignore` file with the new creds file name so that it does not get inadvertently committed to your github repo. If you end up exposing usernames and passwords in a github repo you're going to be in for a bad time.
 
-#### Gmail App Passwords are preferred over your main email password
+#### Use Gmail App Passwords instead of your login password
+I recommend using App Passwords as they make it easy to have a separate password for each application that needs to connect to your gmail account, and you can revoke them individually if required.
 See https://support.google.com/accounts/answer/185833?hl=en
 
 Excerpt
