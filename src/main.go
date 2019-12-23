@@ -1,6 +1,4 @@
 //usr/bin/env go run $0 $@; exit
-package main
-
 //<bitbar.title>Check Gmail Accounts</bitbar.title>
 //<bitbar.version>v1.0</bitbar.version>
 //<bitbar.author>bricklen</bitbar.author>
@@ -8,6 +6,9 @@ package main
 //<bitbar.desc>Configurable gmail checks for multiple accounts</bitbar.desc>
 //<bitbar.image>https://i.imgur.com/a8hV99U.png</bitbar.image>
 //<bitbar.dependencies>golang</bitbar.dependencies>
+//<bitbar.abouturl>https://github.com/bricklen/gmailnotifier</bitbar.abouturl>
+
+package main
 
 import (
 	"encoding/csv"
