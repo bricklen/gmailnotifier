@@ -12,6 +12,7 @@ package main
 
 import (
 	"encoding/csv"
+	"encoding/xml"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -19,12 +20,8 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"regexp"
-	"strconv"
 )
 
-//var noEmail = `✉️`
-//var gotEmail = `💌`
 // Using emojis:
 var noEmail = ":envelope:"
 var gotEmail = ":e-mail:"
@@ -33,6 +30,26 @@ var gotEmail = ":e-mail:"
 If changes are made to this file, from gmailnotifier directory, build the executable:
 go build -o plugins/gmailnotifier.30s.cgo src/main.go
 */
+
+type Feed struct {
+	XMLName   xml.Name `xml:"feed" json:"-"`
+	EntryList []Entry  `xml:"entry" json:"entries"`
+	FullCount int      `xml:"fullcount" json:"fullcount"`
+}
+
+type Entry struct {
+	XMLName  xml.Name `xml:"entry" json:"-"`
+	Title    string   `xml:"title" json:"title"`
+	Summary  string   `xml:"summary" json:"summary"`
+	Modified string   `xml:"modified" json:"modified,omitempty"`
+	Id       string   `xml:"id" json:"id"`
+	Author   *Author  `xml:"author" json:"author,omitempty"`
+}
+
+type Author struct {
+	Name  string `xml:"name" json:"name,omitempty"`
+	Email string `xml:"email" json:"email,omitempty"`
+}
 
 func main() {
 	execFileAndPath, err := os.Executable()
@@ -47,12 +64,14 @@ func main() {
 
 	f, err := os.Open(credsFile)
 	errHandler(err)
-	var unreadEmails int = 0
 
 	r := csv.NewReader(f)
 	r.Comma = '|'
-	var countPerUser string = ""
 
+	var authorAndSubject = make(map[string]string)
+	var accountAndUnreadCount = make(map[string]int)
+
+	var totalUnreadEmailCount int = 0
 	for {
 		record, err := r.Read()
 		if err == io.EOF {
@@ -76,23 +95,58 @@ func main() {
 
 		bodyBytes, err := ioutil.ReadAll(resp.Body)
 		errHandler(err)
-		stringResp := string(bodyBytes)
-		someRegex, _ := regexp.Compile(`<fullcount>([0-9]+)</fullcount>`)
-		match := someRegex.FindStringSubmatch(stringResp)
-		count, _ := strconv.Atoi(match[1])
-		if count > int(0) {
-			unreadEmails = unreadEmails + count
-			countPerUser = fmt.Sprintf("%s %s: %d\n", countPerUser, username, count)
+		rawXmlData := string(bodyBytes)
+
+		var feed Feed
+		err = xml.Unmarshal([]byte(rawXmlData), &feed)
+		errHandler(err)
+
+		emailCount := feed.FullCount
+		totalUnreadEmailCount = totalUnreadEmailCount + emailCount
+
+		var maxEmailsPerAccountToDisplay int = 8
+		var tempValue string
+		var maxSubjectLength int = 40
+		for i := 0; i < emailCount; i++ {
+			subj := feed.EntryList[i].Title
+			// truncate the subject to specific length
+			if len(subj) >= maxSubjectLength {
+				subj = subj[:maxSubjectLength] + "..."
+			}
+			if i >= int(maxEmailsPerAccountToDisplay) {
+				tempValue = fmt.Sprintf("%s... and %d more unopened email(s)\n", tempValue, emailCount-maxEmailsPerAccountToDisplay)
+				break
+			} else {
+				tempValue = fmt.Sprintf("%s[%s] From: %s\t Subject: %s\n", tempValue, username, feed.EntryList[i].Author.Email, subj)
+			}
+		}
+		tempValue = fmt.Sprintf("%s\n---\n", tempValue)
+
+		if emailCount > 0 {
+			authorAndSubject[username] = tempValue
+			accountAndUnreadCount[username] = emailCount
 		}
 	}
-	if unreadEmails > int(0) {
-		fmt.Printf("%v %d\n", gotEmail, unreadEmails)
-		fmt.Println("---")
-		// Everything below "---" will only show up in the drop list once you click on the icon in the toolbar.
+
+	// Update the count next to the icon with the number of unread emails
+	if totalUnreadEmailCount > int(0) {
+		fmt.Printf("%v %d\n", gotEmail, totalUnreadEmailCount)
+
 		// Anything printed above the "---" will be cycled through in the toolbar.
-		fmt.Println(countPerUser)
+		// Everything below "---" will only show up in the drop list once you click on the icon in the toolbar.
+		fmt.Println("---")
+		// Print out the accounts and unread email counts
+		for k, v := range accountAndUnreadCount {
+			fmt.Printf("%s: %d unread | color=navy font=AndaleMono-Bold\n", k, v)
+		}
+		fmt.Println("---")
+
+		// Print out a snippet of the unread emails from each account
+		for _, v := range authorAndSubject {
+			fmt.Println(v)
+		}
 	} else {
-		fmt.Printf("%v %d\n", noEmail, unreadEmails)
+		fmt.Printf("%v %d\n", noEmail, 0)
 	}
 }
 
