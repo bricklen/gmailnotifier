@@ -94,3 +94,8 @@ You are encouraged to review the `main.go` source file - and to build a new exec
 
 ## Disclaimer
 See the LICENSE about disclaimers of liability. As with all Open Source software: use at your own risk. 
+
+## TODO
+- Investigate rewriting this script to use the Google native API tools, https://godoc.org/google.golang.org/api/gmail/
+- Add option to delete a message. Prompt to confirm.
+
