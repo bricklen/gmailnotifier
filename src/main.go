@@ -90,7 +90,10 @@ func main() {
 		req.SetBasicAuth(username, password)
 
 		resp, err := http.DefaultClient.Do(req)
-		errHandler(err)
+		if err != nil {
+			// connection error, skip to next iteration of loop, if any
+			continue
+		}
 		defer resp.Body.Close()
 
 		bodyBytes, err := ioutil.ReadAll(resp.Body)
