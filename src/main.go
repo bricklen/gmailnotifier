@@ -1,12 +1,11 @@
 //usr/bin/env go run $0 $@; exit
-//<bitbar.title>Check Gmail Accounts</bitbar.title>
-//<bitbar.version>v1.0</bitbar.version>
-//<bitbar.author>bricklen</bitbar.author>
-//<bitbar.author.github>bricklen</bitbar.author.github>
-//<bitbar.desc>Configurable gmail checks for multiple accounts</bitbar.desc>
-//<bitbar.image>https://i.imgur.com/a8hV99U.png</bitbar.image>
-//<bitbar.dependencies>golang</bitbar.dependencies>
-//<bitbar.abouturl>https://github.com/bricklen/gmailnotifier</bitbar.abouturl>
+//<xbar.title>Check Gmail Accounts</xbar.title>
+//<xbar.version>v1.3</xbar.version>
+//<xbar.author>bricklen</xbar.author>
+//<xbar.author.github>bricklen</xbar.author.github>
+//<xbar.desc>Configurable gmail checks for multiple accounts</xbar.desc>
+//<xbar.image>https://i.imgur.com/a8hV99U.png</xbar.image>
+//<xbar.abouturl>https://github.com/bricklen/gmailnotifier</xbar.abouturl>
 
 package main
 
@@ -15,7 +14,6 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -33,17 +31,31 @@ go build -o plugins/gmailnotifier.30s.cgo src/main.go
 
 type Feed struct {
 	XMLName   xml.Name `xml:"feed" json:"-"`
-	EntryList []Entry  `xml:"entry" json:"entries"`
+	Version   string   `xml:"version,attr"`
+	Xmlns     string   `xml:"xmlns,attr"`
+	Title     string   `xml:"title" json:"title,omitempty"`
+	Tagline   string   `xml:"tagline" json:"tagline,omitempty"`
 	FullCount int      `xml:"fullcount" json:"fullcount"`
+	Modified  string   `xml:"modified" json:"modified,omitempty"`
+	EntryList []Entry  `xml:"entry" json:"entries"`
 }
 
 type Entry struct {
-	XMLName  xml.Name `xml:"entry" json:"-"`
+	XMLName  xml.Name `xml:"entry"`
 	Title    string   `xml:"title" json:"title"`
 	Summary  string   `xml:"summary" json:"summary"`
+	Link     Link     `xml:"link"`
 	Modified string   `xml:"modified" json:"modified,omitempty"`
-	Id       string   `xml:"id" json:"id"`
+	Issued   string   `xml:"issued" json:"issued,omitempty"`
+	Id       string   `xml:"id"`
 	Author   *Author  `xml:"author" json:"author,omitempty"`
+}
+
+type Link struct {
+	XMLName xml.Name `xml:"link"`
+	Rel     string   `xml:"rel,attr"`
+	Href    string   `xml:"href,attr"`
+	Type    string   `xml:"type,attr"`
 }
 
 type Author struct {
@@ -96,13 +108,14 @@ func main() {
 		}
 		defer resp.Body.Close()
 
-		bodyBytes, err := ioutil.ReadAll(resp.Body)
+		bodyBytes, err := io.ReadAll(resp.Body)
 		errHandler(err)
 		rawXmlData := string(bodyBytes)
 
 		var feed Feed
-		err = xml.Unmarshal([]byte(rawXmlData), &feed)
-		errHandler(err)
+		//err = xml.Unmarshal([]byte(rawXmlData), &feed)
+		//errHandler(err)
+		xml.Unmarshal([]byte(rawXmlData), &feed)
 
 		emailCount := feed.FullCount
 		totalUnreadEmailCount = totalUnreadEmailCount + emailCount

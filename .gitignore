@@ -5,6 +5,8 @@
 *.so
 *.dylib
 *.idea
+*.DS_Store
+go.mod
 
 # Test binary, built with `go test -c`
 *.test
