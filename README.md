@@ -1,98 +1,128 @@
-# Prerequisites
-* [xbar](https://github.com/matryer/xbar)
-* Recent version of Golang
+<p align="center">
+  <img src="docs/logo.png" alt="gmailnotifier" width="200" />
+</p>
 
-# tl;dr installation instructions
-1.  Install xbar.
-1.  Copy the `gmailnotifier.*.cgo` executable from the `plugins` directory of this github repo to a local directory on your Mac.
-1.  Create the `.creds_gmail` file in the same local directory, this file stores the `email|password` credentials, with the username and gmail app passwords separated by a pipe.
+<h1 align="center">gmailnotifier</h1>
 
-# Detailed installation instructions 
+<p align="center">
+  A tiny, secure, multi-account Gmail unread-mail indicator for the macOS menu bar,
+  powered by <a href="https://swiftbar.app">SwiftBar</a>.
+</p>
 
-### xbar installation
-1.  Get the most recent release of xbar from https://github.com/matryer/xbar/releases
-1.  Download and run the most recent `xbar.vX.Y.Z.dmg` osx installer
-1.  Launch the `xbar` app. For example, using Spotlight (Command + Space), type in xbar and you should see the application listed.
-    Launch it, then click Open to install it.
-    
-    You may need to go to *System Preferences* -> *Security & Privacy* -> *General* and allow the app to be opened. This step applies to installing `gmailnotifier` too, because these are third party apps, not ones from the Mac app store.
-1.  You will be prompted to choose a location where the plugins are located. For now, you can cancel out of this, we'll set that location once `gmailnotifier` is installed.
+---
 
-### gmailnotifier installation
-1.  Download the most recent release from https://github.com/bricklen/gmailnotifier/releases
-1.  Extract the zip file (or tarball). If you're unsure where to extract to, create a directory under $HOME called `apps` and extract the zip file there.
-1.  Launch the `xbar` app if you haven't already.
-1.  Click on the xbar text/icon in the toolbar, select *Change Plugin Folder*, then set the plugins directory location to where your toolbar apps will run from. This should be `gmailnotifier-X.Y/plugins`, where `X.Y` is the version. (see NOTE below for alternatives).
-    
-    You can change this plugins setting at any time by clicking on your xbar toolbar app, then clicking *Preferences* ->  *Change Plugin Folder*.
-    
-    **NOTE**: If you only want to run this app (and no other xbar plugins), using the `gmailnotifier-X.Y/plugins` directory is fine. However, if you have other plugins, you probably want a plugins directory in a more central location (eg. `$HOME/xbar/plugins/`.
-    If you do use an external xbar plugins directory, you will need to copy the `gmailnotifier.*.cgo` executable to that plugins directory.
-1.  If you get a warning like "*gmailnotifier.30s.cgo cannot be opened because the developer cannot be verified*", you will need go to *System Preferences* -> *Security & Privacy* -> *General* and allow the app to be opened.
-1.  If you needed to grant permission to install the gmailnotifier app, repeat the earlier xbar *Change Plugin Folder* step (step #4)
-1.  Once gmailnotifier is successfully installed, add a file called `.creds_gmail` to same location as the executable (eg. `gmailnotifier-X.Y/plugins/`). This file MUST exist for the plugin to know which accounts to check.
-    
-    Add the Gmail username and app password to `.creds_gmail` separated by a pipe (`|`).
-    
-    Do this for each email account you want to check, one *username|app-password* pair per line. 
+## What it does
 
-    #### Example
-    ```
-    examplename|mysecretpassword
-    myotheremail|supersecretpass
-    my-gsuite-email@acme.com|myuncrackablepasswd
-    ```
-1.  Click the xbar icon in your toolbar, select *Preferences* -> *Refresh All*.
-1.  Your plugin should now show as a small mail icon with the number of unread emails to the right of it.
+- Shows your total unread Gmail count in the menu bar, with a per-account breakdown and a preview of the most recent unread messages in the dropdown.
+- Supports **multiple accounts** (personal Gmail and Google Workspace alike).
+- Connects via **IMAP over TLS** (`imap.gmail.com:993`, TLS 1.2 minimum) — never sends your credentials anywhere except Google's own servers.
+- Stores passwords **encrypted in the macOS Keychain**, or optionally fetches them on demand from **1Password** via the `op` CLI.
+- Configures itself through native macOS dialogs — no editing config files by hand.
 
-### Note about G-Suite (non-gmail) domains
-This plugin works for those, but you will need to supply your full organization address as your username, whereas if it is for a regular Gmail account, you only need to supply your username.
+## Install
 
-### Directory layout
-```
-gmailnotifier-X.Y
-├── .gitignore
-├── LICENSE
-├── README.md
-├── plugins
-│   ├── .creds_gmail
-│   └── gmailnotifier.30s.cgo
-└── src
-    └── main.go
+### Option 1 — Build from source (recommended)
+
+```bash
+git clone https://github.com/bricklen/gmailnotifier.git
+cd gmailnotifier
+make install
 ```
 
-## Rebuilding the Golang executable
-If you make changes to `main.go`, you will need to rebuild the `.cgo` executable file.
+`make install` builds the binary and symlinks it into your SwiftBar plugin folder. The first time you launch the plugin (or click *Configure accounts…* in its dropdown) the setup wizard walks you through adding accounts.
 
-From the `gmailnotifier-X.Y` directory, build the executable:
+You will also need:
+- [SwiftBar](https://swiftbar.app) — `brew install swiftbar` (or download from the [SwiftBar releases page](https://github.com/swiftbar/SwiftBar/releases)).
+- Go 1.22 or later — `brew install go`.
+
+### Option 2 — Release binary
+
+Download the latest archive from [Releases](https://github.com/bricklen/gmailnotifier/releases). Release binaries are **signed with a Developer ID and notarized by Apple**, so macOS Gatekeeper accepts them on first launch with no special steps. Verify the download before running:
+
+```bash
+shasum -a 256 -c SHA256SUMS
+chmod +x gmailnotifier.30s-darwin-arm64        # or -amd64 on Intel Macs
+./gmailnotifier.30s-darwin-arm64 setup
 ```
-go build -o plugins/gmailnotifier.30s.cgo src/main.go
+
+The setup wizard will offer to install the binary into your SwiftBar plugin folder automatically.
+
+## First run
+
+The wizard handles everything except the questions only you can answer:
+
+1. **Your Gmail address.**
+2. **An App Password** for that address — generate one at <https://myaccount.google.com/apppasswords>. (Your regular Google password will not work if 2-Step Verification is enabled, which it should be.)
+3. **Where to keep the password:** macOS Keychain (default) or 1Password (only offered if `op` is installed and signed in).
+
+The wizard tests the IMAP login before saving and immediately tells you whether the connection works. Repeat for as many accounts as you want.
+
+To re-open the wizard later, click the menu-bar icon and choose **Configure accounts…**, or run `gmailnotifier setup` from a terminal.
+
+## Security model
+
+| What                                 | Where it lives                                                                  |
+|--------------------------------------|---------------------------------------------------------------------------------|
+| Account list (emails only)           | `~/Library/Application Support/gmailnotifier/accounts.toml` (mode `0600`)       |
+| Passwords (Keychain backend)         | macOS Keychain, service `gmailnotifier`, account = email address                |
+| Passwords (1Password backend)        | Never stored locally — fetched on each check via `op read "op://..."`           |
+| Network                              | TLS 1.2+ to `imap.gmail.com:993`, server name verified                          |
+
+- The config file never contains a password — only a *reference* describing where to find one.
+- The binary never writes credentials to disk and never logs them.
+- Connections fail closed: a single account's failure (network, auth, timeout) is shown in the dropdown but never blocks the rest of the bar.
+- The code is small enough to audit end-to-end in one sitting; start at `cmd/gmailnotifier/main.go`.
+
+## Migrating from the old `.creds_gmail` file
+
+Earlier versions stored `email|password` lines in a plaintext `.creds_gmail` file. On first launch, the setup wizard detects that file and offers to:
+
+1. Import every account into the Keychain.
+2. Overwrite the plaintext file with zeros and delete it.
+
+Nothing happens without your confirmation.
+
+## 1Password integration
+
+If `op` (the [1Password CLI](https://developer.1password.com/docs/cli/get-started/)) is installed and authenticated, the setup wizard offers it as a per-account password source. Store each Gmail App Password as a 1Password item and reference it with a secret reference like `op://Personal/Gmail/password`. The binary calls `op read --no-newline` on every refresh; nothing is cached on disk.
+
+Only `op://` references are accepted; arbitrary strings are rejected to keep the CLI invocation safe.
+
+## Layout
+
+```
+gmailnotifier/
+├── cmd/gmailnotifier/main.go        # entry point
+├── internal/
+│   ├── config/                      # accounts.toml + legacy reader
+│   ├── secrets/                     # Keychain + 1Password backends
+│   ├── mail/                        # IMAP-over-TLS check
+│   ├── output/                      # SwiftBar dropdown formatter
+│   └── setup/                       # interactive wizard + osascript dialogs
+├── docs/logo.png
+├── Makefile
+└── .github/workflows/ci.yml
 ```
 
-### Other options for the plugin
-* The official guide is at https://github.com/matryer/xbar-plugins/blob/main/CONTRIBUTING.md
+## Plugin filename
 
-### Changing the execution intervals
-The notifier check frequency is defined by the interval in the file name (between the name and extension). For example, to check every 30 seconds, the file name would be `gmailnotifier.30s.cgo`
+SwiftBar (and xbar) use the filename to decide how often to refresh. `gmailnotifier.30s` runs every 30 seconds; rename to `gmailnotifier.1m`, `gmailnotifier.5m`, etc. as you like. SwiftBar accepts any executable — the extension does not matter.
 
-### About the credentials file
-If you fork or build from source, **be sure** to maintain the credentials file name of `.creds_gmail`, or if you change it, make sure to update the `.gitignore` file with the new creds file name so that it does not get inadvertently committed to your github repo. If you end up exposing usernames and passwords in a github repo you're going to be in for a bad time.
+## Development
 
-#### Use Gmail App Passwords instead of your login password
-It is strongly recommend using App Passwords instead of your login password, as they make it easy to have a separate password for each application that needs to connect to your gmail account, and you can revoke them individually if required.
-See https://support.google.com/accounts/answer/185833?hl=en
+```bash
+make test      # go test -race -count=1 ./...
+make vet       # go vet ./...
+make build     # produces bin/gmailnotifier.30s
+make dist      # cross-compiled binaries + SHA256SUMS in dist/
+```
 
-Excerpt
-> When you use 2-Step Verification, some apps or devices may be blocked from accessing your Google Account. App Passwords are a way to let the blocked app or device access your Google Account.
+The macOS Keychain integration test is gated behind a build tag because it touches the real Keychain and may prompt for permission. Run it locally with:
 
-## Privacy notice
-This app does not save, nor send your credentials (or anything else for that matter) anywhere, except directly to https://mail.google.com/mail to get the unread mail counts.
+```bash
+go test -tags=keychain ./internal/secrets/...
+```
 
-You are encouraged to review the `main.go` source file - and to build a new executable from that - if you have any concerns about the code.
+## License
 
-## Disclaimer
-See the LICENSE about disclaimers of liability. As with all Open Source software: use at your own risk. 
-
-## TODO
-- Investigate rewriting this script to use the Google native API tools, https://godoc.org/google.golang.org/api/gmail/
-- Add option to delete a message. Prompt to confirm.
+MIT — see [LICENSE](LICENSE).
