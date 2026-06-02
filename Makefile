@@ -1,4 +1,4 @@
-BINARY := gmailnotifier.30s
+BINARY := gmailnotifier.30s.bin
 PKG    := github.com/bricklen/gmailnotifier
 VERSION ?= $(shell git describe --tags --dirty --always 2>/dev/null || echo dev)
 LDFLAGS := -s -w -X main.version=$(VERSION)

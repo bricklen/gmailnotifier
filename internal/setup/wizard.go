@@ -22,6 +22,14 @@ import (
 	"github.com/bricklen/gmailnotifier/internal/secrets"
 )
 
+// PluginFilename is the name used when this binary is installed into the
+// SwiftBar plugin folder. SwiftBar parses the refresh interval out of the
+// filename and *requires* at least three dot-separated components
+// (name.<interval>.<ext>); without a trailing component it falls back to
+// its 100-day "never refresh" default. The trailing `.bin` exists purely
+// to satisfy that parser.
+const PluginFilename = "gmailnotifier.30s.bin"
+
 // Run is the main entry point.
 func Run(ctx context.Context) error {
 	cfg, err := config.Load()
@@ -310,7 +318,7 @@ func maybeInstallToSwiftBar() error {
 		return nil
 	}
 
-	target := filepath.Join(pluginDir, "gmailnotifier.30s")
+	target := filepath.Join(pluginDir, PluginFilename)
 	existing := findExistingPluginFiles(pluginDir)
 
 	// If the only thing there is a symlink that already points at us,

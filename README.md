@@ -41,8 +41,8 @@ Download the latest archive from [Releases](https://github.com/bricklen/gmailnot
 
 ```bash
 shasum -a 256 -c SHA256SUMS
-chmod +x gmailnotifier.30s-darwin-arm64        # or -amd64 on Intel Macs
-./gmailnotifier.30s-darwin-arm64 setup
+chmod +x gmailnotifier.30s.bin-darwin-arm64    # or -amd64 on Intel Macs
+./gmailnotifier.30s.bin-darwin-arm64 setup
 ```
 
 The setup wizard will offer to install the binary into your SwiftBar plugin folder automatically.
@@ -106,7 +106,9 @@ gmailnotifier/
 
 ## Plugin filename
 
-SwiftBar (and xbar) use the filename to decide how often to refresh. `gmailnotifier.30s` runs every 30 seconds; rename to `gmailnotifier.1m`, `gmailnotifier.5m`, etc. as you like. SwiftBar accepts any executable — the extension does not matter.
+SwiftBar (and xbar) read the refresh interval out of the plugin's filename. The format is `name.<interval>.<ext>` — three dot-separated components, the middle one being a number plus a unit (`s`, `m`, `h`, or `d`). The default install lands at `gmailnotifier.30s.bin`, which refreshes every 30 seconds.
+
+To change the interval, rename the installed file to something like `gmailnotifier.1m.bin` or `gmailnotifier.5m.bin`. The leading name and the trailing component can be anything — SwiftBar only requires that the *middle* component matches the interval pattern. A filename with only two components (e.g. `gmailnotifier.30s`) is parsed as having no interval and silently falls back to SwiftBar's 100-day "never refresh" default, so keep the trailing `.bin`.
 
 ## Development
 

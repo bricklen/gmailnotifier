@@ -7,12 +7,12 @@
 //	gmailnotifier setup      # interactive setup / reconfigure wizard
 //	gmailnotifier version    # print version and exit
 //
-// SwiftBar / xbar metadata follows. The .30s filename suffix tells the
-// host how often to invoke this binary; the metadata below is read by
-// the "About" panel.
+// SwiftBar / xbar metadata follows. The `.30s.` middle component of the
+// installed filename (gmailnotifier.30s.bin) tells the host how often to
+// invoke this binary; the metadata below is read by the "About" panel.
 //
 //<xbar.title>Gmail Notifier</xbar.title>
-//<xbar.version>v2.0.0</xbar.version>
+//<xbar.version>v2.0.1</xbar.version>
 //<xbar.author>bricklen</xbar.author>
 //<xbar.author.github>bricklen</xbar.author.github>
 //<xbar.desc>Encrypted multi-account Gmail unread-mail notifier (IMAP + Keychain + optional 1Password).</xbar.desc>
